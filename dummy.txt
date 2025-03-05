@@ -3,3 +3,11 @@ wgfds
 djkckjsnc
 sckansklcn
 nnknknjikm
+
+Write TestNG test method to find the company with maximum current price. Print the company name and the 
+maximum current price. Hint: Use Customized Xpath.
+1. Go to page: http://demo.guru99.com/test/web-table-element.php
+2. Find the total number of rows and the columns in the stock table.
+3. Traverse the table and find the company with maximum current price. 
+4. Print the company name and the maximum current price of the company. Since the stock price is not 
+constant, every time you run the test, different company may have maximum current price.
