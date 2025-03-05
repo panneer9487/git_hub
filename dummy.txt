@@ -11,3 +11,94 @@ maximum current price. Hint: Use Customized Xpath.
 3. Traverse the table and find the company with maximum current price. 
 4. Print the company name and the maximum current price of the company. Since the stock price is not 
 constant, every time you run the test, different company may have maximum current price.
+
+
+Here's a TestNG test method using Selenium WebDriver to find and print the company with the maximum current price from the stock table on the given webpage. It uses a customized XPath to extract table data dynamically.
+
+TestNG Test Method:
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.List;
+
+public class MaxStockPriceTest {
+    WebDriver driver;
+
+    @BeforeClass
+    public void setup() {
+        System.setProperty("webdriver.chrome.driver", "path/to/chromedriver");
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.get("http://demo.guru99.com/test/web-table-element.php");
+    }
+
+    @Test
+    public void findMaxStockPrice() {
+        // Locate table rows
+        List<WebElement> rows = driver.findElements(By.xpath("//table[@class='dataTable']//tbody/tr"));
+        int rowCount = rows.size();
+        System.out.println("Total Rows: " + rowCount);
+
+        // Locate table columns (assume first row gives correct count)
+        List<WebElement> columns = driver.findElements(By.xpath("//table[@class='dataTable']//thead/tr/th"));
+        int columnCount = columns.size();
+        System.out.println("Total Columns: " + columnCount);
+
+        String maxCompanyName = "";
+        double maxPrice = 0.0;
+
+        // Iterate through table rows to find max current price
+        for (int i = 1; i <= rowCount; i++) {
+            // Get company name
+            String companyName = driver.findElement(By.xpath("//table[@class='dataTable']//tbody/tr[" + i + "]/td[1]/a")).getText();
+
+            // Get current price (4th column)
+            String priceText = driver.findElement(By.xpath("//table[@class='dataTable']//tbody/tr[" + i + "]/td[4]")).getText();
+            double currentPrice = Double.parseDouble(priceText);
+
+            // Check if it's the maximum price
+            if (currentPrice > maxPrice) {
+                maxPrice = currentPrice;
+                maxCompanyName = companyName;
+            }
+        }
+
+        // Print result
+        System.out.println("Company with Maximum Price: " + maxCompanyName);
+        System.out.println("Maximum Current Price: " + maxPrice);
+    }
+
+    @AfterClass
+    public void teardown() {
+        driver.quit();
+    }
+}
+
+Explanation of Code:
+
+1. Setup WebDriver: Launches Chrome browser and navigates to the given URL.
+
+
+2. Find Rows & Columns: Uses XPath to determine the number of rows and columns in the table.
+
+
+3. Traverse the Table: Loops through each row, extracts the company name (first column) and current price (fourth column).
+
+
+4. Find Maximum Price: Compares prices dynamically to track the company with the highest price.
+
+
+5. Prints Result: Displays the company name and its maximum price.
+
+
+6. Teardown Method: Closes the browser after the test execution.
+
+
+
+Let me know if you need modifications!
