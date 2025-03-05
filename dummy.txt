@@ -102,3 +102,12 @@ Explanation of Code:
 
 
 Let me know if you need modifications!
+
+<?xml version="1.0" encoding="UTF-8"?>
+<suite name="Stock Price Suite">
+    <test name="Stock Price Test">
+        <classes>
+            <class name="MaxStockPriceTest"/>
+        </classes>
+    </test>
+</suite>
