@@ -1,0 +1,36 @@
+package pages;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+
+public class ForgotPasswordPage {
+    WebDriver driver;
+
+    // Locators
+    By forgotPasswordLink = By.linkText("Forgot Password");
+    By emailField = By.id("email");
+    By submitButton = By.id("submitBtn");
+    By errorMsg = By.xpath("//div[contains(text(),'Login Name not found')]");
+
+    // Constructor
+    public ForgotPasswordPage(WebDriver driver) {
+        this.driver = driver;
+    }
+
+    // Methods
+    public void clickForgotPassword() {
+        driver.findElement(forgotPasswordLink).click();
+    }
+
+    public void enterEmail(String email) {
+        driver.findElement(emailField).sendKeys(email);
+    }
+
+    public void clickSubmit() {
+        driver.findElement(submitButton).click();
+    }
+
+    public boolean isErrorDisplayed() {
+        return driver.findElement(errorMsg).isDisplayed();
+    }
+}
