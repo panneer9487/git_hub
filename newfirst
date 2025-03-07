@@ -1,0 +1,53 @@
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.*;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+import java.time.Duration;
+
+public class DemoWebShopTest {
+    WebDriver driver;
+    WebDriverWait wait;
+
+    @BeforeClass
+    public void setup() {
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    }
+
+    @Test
+    public void testNavigationAndValidation() {
+        // Step 1: Open the website
+        driver.get("https://demowebshop.tricentis.com/");
+
+        // Step 2: Scroll to 'CUSTOMER SERVICE'
+        WebElement customerServiceElement = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//h3[text()='Customer service']")));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView(true);", customerServiceElement);
+
+        // Step 3: Click on 'Blog'
+        WebElement blogLink = wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//a[text()='Blog']")));
+        blogLink.click();
+
+        // Step 4: Validate the URL
+        wait.until(ExpectedConditions.urlToBe("https://demowebshop.tricentis.com/blog"));
+        Assert.assertEquals(driver.getCurrentUrl(), "https://demowebshop.tricentis.com/blog", "URL mismatch!");
+
+        // Step 5: Verify 'BLOG ARCHIVE' text is displayed
+        WebElement blogArchiveText = wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[contains(text(),'Blog archive')]")));
+        Assert.assertTrue(blogArchiveText.isDisplayed(), "'BLOG ARCHIVE' text not found!");
+    }
+
+    @AfterClass
+    public void teardown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
