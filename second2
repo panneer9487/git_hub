@@ -1,0 +1,83 @@
+package com.alerts.test;
+
+import io.github.bonigarcia.wdm.WebDriverManager;
+import org.openqa.selenium.Alert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+public class AlertHandlingTest {
+    WebDriver driver;
+
+    @BeforeClass
+    public void setup() {
+        WebDriverManager.edgedriver().setup();
+        driver = new EdgeDriver();
+        driver.manage().window().maximize();
+        driver.get("https://the-internet.herokuapp.com/javascript_alerts");
+    }
+
+    @Test(priority = 1)
+    public void handleJsAlert() {
+        driver.findElement(By.xpath("//button[text()='Click for JS Alert']")).click();
+        Alert alert = driver.switchTo().alert();
+        String alertText = alert.getText();
+        Assert.assertEquals(alertText, "I am a JS Alert", "Alert text mismatch!");
+        alert.accept();
+        String resultText = driver.findElement(By.id("result")).getText();
+        Assert.assertTrue(resultText.contains("You successfully clicked an alert"), "JS Alert result verification failed!");
+    }
+
+    @Test(priority = 2)
+    public void handleJsConfirmOk() {
+        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
+        Alert alert = driver.switchTo().alert();
+        String alertText = alert.getText();
+        Assert.assertEquals(alertText, "I am a JS Confirm", "Alert text mismatch!");
+        alert.accept();
+        String resultText = driver.findElement(By.id("result")).getText();
+        Assert.assertTrue(resultText.contains("You clicked: Ok"), "JS Confirm (OK) result verification failed!");
+    }
+
+    @Test(priority = 3)
+    public void handleJsConfirmCancel() {
+        driver.findElement(By.xpath("//button[text()='Click for JS Confirm']")).click();
+        Alert alert = driver.switchTo().alert();
+        Assert.assertEquals(alert.getText(), "I am a JS Confirm", "Alert text mismatch!");
+        alert.dismiss();
+        String resultText = driver.findElement(By.id("result")).getText();
+        Assert.assertTrue(resultText.contains("You clicked: Cancel"), "JS Confirm (Cancel) result verification failed!");
+    }
+
+    @Test(priority = 4)
+    public void handleJsPromptOk() {
+        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
+        Alert alert = driver.switchTo().alert();
+        Assert.assertEquals(alert.getText(), "I am a JS prompt", "Alert text mismatch!");
+        alert.sendKeys("Automation Test");
+        alert.accept();
+        String resultText = driver.findElement(By.id("result")).getText();
+        Assert.assertTrue(resultText.contains("You entered: Automation Test"), "JS Prompt (OK) result verification failed!");
+    }
+
+    @Test(priority = 5)
+    public void handleJsPromptCancel() {
+        driver.findElement(By.xpath("//button[text()='Click for JS Prompt']")).click();
+        Alert alert = driver.switchTo().alert();
+        Assert.assertEquals(alert.getText(), "I am a JS prompt", "Alert text mismatch!");
+        alert.dismiss();
+        String resultText = driver.findElement(By.id("result")).getText();
+        Assert.assertTrue(resultText.contains("You entered: null"), "JS Prompt (Cancel) result verification failed!");
+    }
+
+    @AfterClass
+    public void teardown() {
+        if (driver != null) {
+            driver.quit();
+        }
+    }
+}
